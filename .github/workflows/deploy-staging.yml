@@ -1,0 +1,20 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/workflow-deploy.yml
+    with:
+      environment: staging
+    secrets: inherit

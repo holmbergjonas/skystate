@@ -1,0 +1,16 @@
+{
+  "name": "public_read_invalid_slug",
+  "description": "Public read with slug containing invalid characters returns 400",
+  "request": {
+    "method": "GET",
+    "path": "/project/My Game!/config/production"
+  },
+  "response": {
+    "status": 400,
+    "schema": "error-response.schema.json",
+    "body": {
+      "error": "invalid_slug_format",
+      "message": "Slugs must contain only lowercase alphanumeric characters and hyphens"
+    }
+  }
+}

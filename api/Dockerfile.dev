@@ -1,0 +1,5 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+RUN userdel -r ubuntu 2>/dev/null; useradd -m -s /bin/bash -u 1000 user
+RUN mkdir -p /app/SkyState.Api/obj && chown -R user:user /app
+USER user
+RUN mkdir -p /home/user/.nuget/packages /home/user/.nuget/NuGet

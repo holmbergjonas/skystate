@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skystate.io/schemas/project-config.schema.json",
+  "title": "ProjectConfig",
+  "description": "Versioned config entry returned by GET /project/config endpoints.",
+  "type": "object",
+  "properties": {
+    "projectStateId": { "type": "string", "format": "uuid" },
+    "projectId":      { "type": "string", "format": "uuid" },
+    "environment":    { "type": "string", "enum": ["development", "staging", "production"] },
+    "major":          { "type": "integer", "minimum": 0 },
+    "minor":          { "type": "integer", "minimum": 0 },
+    "patch":          { "type": "integer", "minimum": 0 },
+    "state":          { "type": "string", "description": "JSON-serialized config payload." },
+    "comment":        { "type": ["string", "null"] },
+    "createdAt":      { "type": "string", "format": "date-time" },
+    "stateSizeBytes": { "type": "integer", "minimum": 0 },
+    "version":        { "$ref": "version.schema.json" }
+  },
+  "required": [
+    "projectStateId", "projectId", "environment", "major", "minor", "patch",
+    "state", "comment", "createdAt", "stateSizeBytes", "version"
+  ],
+  "additionalProperties": false
+}

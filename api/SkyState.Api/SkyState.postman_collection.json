@@ -1,0 +1,590 @@
+{
+  "info": {
+    "name": "SkyState API",
+    "description": "SkyState - Hosted state management service for connected applications.\n\n## Authentication\n\nThis collection uses Postman's built-in OAuth 2.0 flow with GitHub.\n\n### Setup (one-time)\n\n1. In your GitHub OAuth App settings, add this callback URL:\n   `https://oauth.pstmn.io/v1/callback`\n2. Set the `githubClientId` and `githubClientSecret` collection variables\n\n### Getting a token\n\n1. Click the **Authorization** tab on this collection\n2. Scroll down and click **Get New Access Token**\n3. Authenticate with GitHub in the popup\n4. Click **Use Token** — Postman auto-attaches it to all requests\n\nThe token is a GitHub OAuth access token sent as a Bearer token. The API validates it directly against GitHub's `/user` endpoint.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "grant_type",
+        "value": "authorization_code",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://github.com/login/oauth/authorize",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://github.com/login/oauth/access_token",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "{{githubClientId}}",
+        "type": "string"
+      },
+      {
+        "key": "clientSecret",
+        "value": "{{githubClientSecret}}",
+        "type": "string"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://oauth.pstmn.io/v1/callback",
+        "type": "string"
+      },
+      {
+        "key": "scope",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "tokenName",
+        "value": "GitHub Token",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5149",
+      "type": "string"
+    },
+    {
+      "key": "githubClientId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "githubClientSecret",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "environmentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "projectStateId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "invoiceId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "description": "Current user profile management",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Current User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"My Display Name\",\n  \"avatarUrl\": \"https://example.com/avatar.png\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "description": "Project CRUD operations",
+      "item": [
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects"]
+            }
+          }
+        },
+        {
+          "name": "Get Project by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects/{{projectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "{{projectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Project by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects/by-slug/my-project",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "by-slug", "my-project"]
+            }
+          }
+        },
+        {
+          "name": "Create Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('projectId', json.projectId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Project\",\n  \"slug\": \"my-project\",\n  \"apiKeyHash\": \"a]!d7$kP2m#Qx9Lw\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects"]
+            },
+            "description": "Creates a new project. On success, auto-sets the `projectId` collection variable."
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Project Name\",\n  \"apiKeyHash\": \"b]!e8$lQ3n#Ry0Mx\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projects/{{projectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "{{projectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects/{{projectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "{{projectId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Environments",
+      "description": "Environment management per project (dev/staging/prod)",
+      "item": [
+        {
+          "name": "List Environments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects/{{projectId}}/environments",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "{{projectId}}", "environments"]
+            }
+          }
+        },
+        {
+          "name": "Get Environment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Environment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('environmentId', json.environmentId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production\",\n  \"slug\": \"prod\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projects/{{projectId}}/environments",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "{{projectId}}", "environments"]
+            },
+            "description": "Creates a new environment. On success, auto-sets the `environmentId` collection variable."
+          }
+        },
+        {
+          "name": "Update Environment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Staging\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Environment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "States",
+      "description": "Project state versioning and management",
+      "item": [
+        {
+          "name": "List States",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}/states",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}", "states"]
+            }
+          }
+        },
+        {
+          "name": "Get Latest State",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}/states/latest",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}", "states", "latest"]
+            }
+          }
+        },
+        {
+          "name": "Get State by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/states/{{projectStateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["states", "{{projectStateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create State",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('projectStateId', json.projectStateId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"major\": 1,\n  \"minor\": 0,\n  \"patch\": 0,\n  \"state\": \"{\\\"featureFlags\\\":{\\\"darkMode\\\":true,\\\"betaAccess\\\":false},\\\"settings\\\":{\\\"maxRetries\\\":3}}\",\n  \"comment\": \"Initial state\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}/states",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}", "states"]
+            },
+            "description": "Creates a new state version. On success, auto-sets the `projectStateId` collection variable. Returns 403 if free tier limits exceeded."
+          }
+        },
+        {
+          "name": "Rollback State",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}/states/rollback/{{projectStateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}", "states", "rollback", "{{projectStateId}}"]
+            },
+            "description": "Rolls back to a target state version by creating a new version entry with the same content."
+          }
+        },
+        {
+          "name": "Public Read State",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [
+              {
+                "key": "If-None-Match",
+                "value": "",
+                "description": "ETag from previous response for conditional request",
+                "disabled": true
+              },
+              {
+                "key": "If-Modified-Since",
+                "value": "",
+                "description": "Timestamp from previous response for conditional request",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/state/my-project/prod",
+              "host": ["{{baseUrl}}"],
+              "path": ["state", "my-project", "prod"]
+            },
+            "description": "CDN-friendly public read endpoint. No authentication required. Supports ETag and If-Modified-Since for caching. Returns 304 Not Modified when content hasn't changed."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "description": "Invoice records",
+      "item": [
+        {
+          "name": "List Invoices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/invoices",
+              "host": ["{{baseUrl}}"],
+              "path": ["invoices"]
+            }
+          }
+        },
+        {
+          "name": "Get Invoice",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/{{invoiceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["invoices", "{{invoiceId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "description": "Stripe billing integration",
+      "item": [
+        {
+          "name": "Get Billing Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/billing/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "status"]
+            },
+            "description": "Returns current billing tier, subscription status, usage, and limits."
+          }
+        },
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"successUrl\": \"http://localhost:3000/billing/success\",\n  \"cancelUrl\": \"http://localhost:3000/billing/cancel\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/billing/checkout",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "checkout"]
+            },
+            "description": "Creates a Stripe checkout session. Returns a URL to redirect the user to for payment."
+          }
+        },
+        {
+          "name": "Create Portal Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"returnUrl\": \"http://localhost:3000/billing\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/billing/portal",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "portal"]
+            },
+            "description": "Creates a Stripe customer portal session. Returns a URL to redirect the user to manage their subscription."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "description": "External service webhooks",
+      "item": [
+        {
+          "name": "Stripe Webhook",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Stripe-Signature",
+                "value": "",
+                "description": "Stripe webhook signature (required)"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_test\",\n  \"type\": \"checkout.session.completed\",\n  \"data\": {}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/stripe",
+              "host": ["{{baseUrl}}"],
+              "path": ["webhooks", "stripe"]
+            },
+            "description": "Receives Stripe webhook events. Uses Stripe-Signature header for verification instead of JWT auth. Typically called by Stripe, not manually."
+          }
+        }
+      ]
+    }
+  ]
+}

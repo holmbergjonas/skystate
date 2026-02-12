@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SkyState.Api.EndToEndTests/SkyState.Api.EndToEndTests.csproj" />
+  <Project Path="SkyState.Api.IntegrationTests/SkyState.Api.IntegrationTests.csproj" />
+  <Project Path="SkyState.Api.UnitTests/SkyState.Api.UnitTests.csproj" />
+  <Project Path="SkyState.Api/SkyState.Api.csproj" />
+</Solution>

@@ -1,0 +1,20 @@
+{
+  "name": "public_read_success",
+  "description": "Read latest config via public endpoint",
+  "request": {
+    "method": "GET",
+    "path": "/project/my-game/config/production"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "public, max-age=60"
+    },
+    "schema": "config-envelope.schema.json",
+    "body": {
+      "version": { "major": 1, "minor": 0, "patch": 0 },
+      "lastModified": "2025-01-15T10:30:00.0000000Z",
+      "config": { "level": 1, "score": 0 }
+    }
+  }
+}

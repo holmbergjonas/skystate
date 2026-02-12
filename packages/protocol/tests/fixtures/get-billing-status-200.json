@@ -1,0 +1,27 @@
+{
+  "name": "get_billing_status_success",
+  "description": "Get the billing status for the authenticated user",
+  "request": {
+    "method": "GET",
+    "path": "/billing/status",
+    "headers": { "Authorization": "Bearer <token>" }
+  },
+  "response": {
+    "status": 200,
+    "schema": "billing-status.schema.json",
+    "body": {
+      "tier": "free",
+      "subscriptionStatus": null,
+      "currentPeriodEnd": null,
+      "usage": {
+        "documentCount": 3,
+        "storageBytes": 15240
+      },
+      "limits": {
+        "maxDocuments": 10,
+        "maxStorageBytes": 1048576
+      },
+      "isOverLimit": false
+    }
+  }
+}

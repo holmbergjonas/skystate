@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skystate.io/schemas/user.schema.json",
+  "title": "User",
+  "description": "User profile returned by GET /users/me.",
+  "type": "object",
+  "properties": {
+    "userId":       { "type": "string", "format": "uuid" },
+    "ssoProvider":  { "type": "string" },
+    "ssoUserId":    { "type": "string" },
+    "email":        { "type": ["string", "null"] },
+    "displayName":  { "type": ["string", "null"] },
+    "avatarUrl":    { "type": ["string", "null"], "format": "uri" },
+    "stripeUserId": { "type": ["string", "null"] },
+    "lastLoginAt":  { "type": ["string", "null"], "format": "date-time" },
+    "createdAt":    { "type": "string", "format": "date-time" },
+    "updatedAt":    { "type": "string", "format": "date-time" }
+  },
+  "required": [
+    "userId", "ssoProvider", "ssoUserId", "email", "displayName",
+    "avatarUrl", "stripeUserId", "lastLoginAt", "createdAt", "updatedAt"
+  ],
+  "additionalProperties": false
+}

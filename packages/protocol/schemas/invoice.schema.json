@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skystate.io/schemas/invoice.schema.json",
+  "title": "Invoice",
+  "description": "Invoice record returned by GET /invoices endpoints.",
+  "type": "object",
+  "properties": {
+    "invoiceId":          { "type": "string", "format": "uuid" },
+    "userId":             { "type": "string", "format": "uuid" },
+    "tier":               { "type": "string" },
+    "boostMultiplier":    { "type": "integer", "minimum": 1 },
+    "amountPaidCents":    { "type": "integer", "minimum": 0 },
+    "status":             { "type": "string" },
+    "billingPeriodStart": { "type": "string", "format": "date-time" },
+    "billingPeriodEnd":   { "type": "string", "format": "date-time" },
+    "createdAt":          { "type": "string", "format": "date-time" }
+  },
+  "required": [
+    "invoiceId", "userId", "tier", "boostMultiplier", "amountPaidCents",
+    "status", "billingPeriodStart", "billingPeriodEnd", "createdAt"
+  ],
+  "additionalProperties": false
+}

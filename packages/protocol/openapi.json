@@ -1,0 +1,240 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SkyState Public API",
+    "description": "Public read-only API for fetching versioned JSON config by project and environment slugs. No authentication required.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "SkyState",
+      "url": "https://skystate.io"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.skystate.io",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/project/{projectSlug}/config/{environmentSlug}": {
+      "get": {
+        "operationId": "getPublicConfig",
+        "summary": "Get latest project config",
+        "description": "Read the latest versioned config for a project/environment combination. This endpoint is public and requires no authentication -- it is the primary read API for client applications.",
+        "tags": ["Public Config"],
+        "parameters": [
+          {
+            "name": "projectSlug",
+            "in": "path",
+            "required": true,
+            "description": "URL-safe project identifier.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "examples": ["my-game"]
+            }
+          },
+          {
+            "name": "environmentSlug",
+            "in": "path",
+            "required": true,
+            "description": "Fixed environment identifier (development, staging, or production).",
+            "schema": {
+              "type": "string",
+              "enum": ["development", "staging", "production"],
+              "examples": ["production"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest config for the project/environment.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Caching directive for public proxies and clients.",
+                "schema": {
+                  "type": "string",
+                  "examples": ["public, max-age=60"]
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "description": "CORS header -- always `*` for this endpoint.",
+                "schema": {
+                  "type": "string",
+                  "const": "*"
+                }
+              },
+              "X-RateLimit-Limit": {
+                "description": "Monthly request limit for this project's owner.",
+                "schema": {
+                  "type": "string",
+                  "examples": ["200"]
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "description": "Remaining requests in the current billing period.",
+                "schema": {
+                  "type": "string",
+                  "examples": ["150"]
+                }
+              },
+              "X-RateLimit-Reset": {
+                "description": "Unix timestamp when the rate limit resets (first of next month UTC).",
+                "schema": {
+                  "type": "string",
+                  "examples": ["1738368000"]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigEnvelope"
+                },
+                "example": {
+                  "version": { "major": 1, "minor": 0, "patch": 0 },
+                  "lastModified": "2025-01-15T10:30:00.0000000Z",
+                  "config": { "level": 1, "score": 0 }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid slug format -- one or both slugs contain characters outside `[a-z0-9-]`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "invalid_slug_format",
+                  "message": "Slugs must contain only lowercase alphanumeric characters and hyphens"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found -- the project/environment slug combination does not exist or has no config. No body."
+          },
+          "429": {
+            "description": "Rate limit exceeded -- the project owner has exceeded their monthly API request limit.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until the rate limit resets.",
+                "schema": {
+                  "type": "string",
+                  "examples": ["2592000"]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                },
+                "example": {
+                  "code": "RATE_LIMIT_EXCEEDED",
+                  "message": "Monthly API request limit exceeded",
+                  "limit": 200,
+                  "current": 221,
+                  "resetAt": "2025-02-01T00:00:00Z",
+                  "upgradeUrl": "/upgrade"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConfigEnvelope": {
+        "type": "object",
+        "description": "Public config response envelope returned by GET /project/{projectSlug}/config/{environmentSlug}.",
+        "required": ["version", "lastModified", "config"],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "$ref": "#/components/schemas/Version"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of when this config version was created."
+          },
+          "config": {
+            "description": "The deserialized JSON config payload. Any valid JSON value."
+          }
+        }
+      },
+      "Version": {
+        "type": "object",
+        "description": "Semantic version triple.",
+        "required": ["major", "minor", "patch"],
+        "additionalProperties": false,
+        "properties": {
+          "major": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "patch": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Standard error envelope.",
+        "required": ["error", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Machine-readable error code.",
+            "enum": ["invalid_slug_format", "not_found"]
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error description."
+          }
+        }
+      },
+      "RateLimitError": {
+        "type": "object",
+        "description": "Rate limit exceeded error response.",
+        "required": ["code", "message", "limit", "current", "resetAt", "upgradeUrl"],
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "const": "RATE_LIMIT_EXCEEDED"
+          },
+          "message": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "current": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "resetAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "upgradeUrl": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

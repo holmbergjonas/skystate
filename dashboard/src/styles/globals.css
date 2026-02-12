@@ -1,0 +1,170 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+  --background: #0d0d1a;
+  --foreground: #e2e8f0;
+  --card: rgba(255, 255, 255, 0.03);
+  --card-foreground: #e2e8f0;
+  --popover: #111125;
+  --popover-foreground: #e2e8f0;
+  --primary: #3399FF;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(255, 255, 255, 0.05);
+  --secondary-foreground: #e2e8f0;
+  --muted: rgba(255, 255, 255, 0.05);
+  --muted-foreground: #b0b0b0;
+  --accent: #3399FF;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #3399FF;
+  --chart-1: #3399FF;
+  --chart-2: #8b5cf6;
+  --chart-3: #22c55e;
+  --chart-4: #f59e0b;
+  --chart-5: #ef4444;
+  --sidebar: rgba(255, 255, 255, 0.03);
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #3399FF;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(255, 255, 255, 0.05);
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #3399FF;
+  --surface: rgba(255, 255, 255, 0.03);
+  --hover: rgba(255, 255, 255, 0.06);
+  --text-secondary: #b0b0b0;
+  --text-muted: #9a9a9a;
+  --text-dim: #8a8a8a;
+  --surface-translucent: rgba(13, 13, 26, 0.85);
+  --indigo-light: #7ec8ff;
+  --indigo-tint: #3399FF15;
+  --purple-accent: #8b5cf6;
+  --env-production: #ef4444;
+  --env-staging: #f59e0b;
+  --env-development: #22c55e;
+  --green-tint: #22c55e15;
+  --json-boolean-true: #4ade80;
+  --json-boolean-false: #f87171;
+  --json-number: #fbbf24;
+  --json-string: #a78bfa;
+  --json-key: #7ec8ff;
+  --diff-added: #4ade80;
+  --diff-added-bg: #4ade8012;
+  --diff-removed: #f87171;
+  --diff-removed-bg: #f8717112;
+  --diff-changed: #fbbf24;
+  --diff-changed-bg: #fbbf2412;
+}
+
+@theme inline {
+  /* Typography scale (maps to Tailwind utilities):
+   *   text-xs    (12px) — labels, captions, meta info, table headers
+   *   text-sm    (14px) — body text, descriptions, form labels, list items
+   *   text-base  (16px) — section headings (h2), prominent body text
+   *   text-lg    (18px) — page section titles, dialog titles
+   *   text-xl    (20px) — card titles (PlanCard tier name)
+   *   text-2xl   (24px) — not commonly used
+   *   text-3xl   (30px) — login brand name
+   *   text-4xl   (36px) — hero numbers (usage meters), hero headings (plans)
+   *   text-5xl   (48px) — plan card price
+   *
+   * Font weights:
+   *   font-normal    — body text, descriptions
+   *   font-medium    — labels, section headings, tab text, emphasized body
+   *   font-semibold  — page-level headings, dialog titles
+   *   font-bold      — numbers/stats, card titles, brand name
+   *   font-extrabold — hero headings (plans page), plan card prices
+   *
+   * Font families:
+   *   font-sans (default) — all body text, headings, labels, buttons, numbers,
+   *                         version strings, slugs, form inputs
+   *   font-mono           — ONLY for: the "SkyState" brand name in the top bar,
+   *                         the CodeMirror state editor, and the unified diff view
+   *
+   * Text colours:
+   *   text-foreground     — primary text (headings, important body)
+   *   text-text-secondary — secondary text (descriptions, supporting info)
+   *   text-text-muted     — muted text (placeholders, less important meta)
+   *   text-text-dim       — dimmest text (timestamps, separators)
+   *   text-muted-foreground — shadcn components (equivalent to text-muted)
+   */
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-surface: var(--surface);
+  --color-hover: var(--hover);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Source Code Pro', 'Fira Code', monospace;
+  --radius-card: 10px;
+  --radius-button: 6px;
+  --radius-pill: 999px;
+  --radius-badge: 4px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.bg-app {
+  background:
+    radial-gradient(ellipse 120% 80% at 15% 20%, rgba(0,40,80,0.5) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 60% at 80% 10%, rgba(20,50,100,0.4) 0%, transparent 45%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(10,25,55,0.5) 0%, transparent 50%),
+    radial-gradient(ellipse 130% 50% at 30% 80%, rgba(0,45,85,0.3) 0%, transparent 45%),
+    radial-gradient(ellipse 80% 90% at 90% 70%, rgba(15,25,55,0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 60% 30%, rgba(51,153,255,0.08) 0%, transparent 40%),
+    radial-gradient(ellipse 110% 60% at 10% 60%, rgba(5,20,45,0.5) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a14 0%, #0d0d1a 40%, #0e1020 70%, #0d0d1a 100%);
+}

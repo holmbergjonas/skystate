@@ -1,0 +1,26 @@
+{
+  "name": "get_latest_config_success",
+  "description": "Get the latest config version for a project/environment",
+  "request": {
+    "method": "GET",
+    "path": "/project/a1b2c3d4-e5f6-7890-abcd-ef1234567890/config/production/latest",
+    "headers": { "Authorization": "Bearer <token>" }
+  },
+  "response": {
+    "status": 200,
+    "schema": "project-config.schema.json",
+    "body": {
+      "projectStateId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "environment": "production",
+      "major": 1,
+      "minor": 0,
+      "patch": 0,
+      "state": "{\"level\":1,\"score\":0}",
+      "comment": "Initial release",
+      "createdAt": "2025-01-15T10:30:00Z",
+      "stateSizeBytes": 24,
+      "version": { "major": 1, "minor": 0, "patch": 0 }
+    }
+  }
+}

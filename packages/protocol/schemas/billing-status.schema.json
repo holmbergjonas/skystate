@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skystate.io/schemas/billing-status.schema.json",
+  "title": "BillingStatus",
+  "description": "Billing status returned by GET /billing/status.",
+  "type": "object",
+  "properties": {
+    "tier":               { "type": "string" },
+    "subscriptionStatus": { "type": ["string", "null"] },
+    "currentPeriodEnd":   { "type": ["string", "null"], "format": "date-time" },
+    "usage": {
+      "type": "object",
+      "properties": {
+        "documentCount": { "type": "integer", "minimum": 0 },
+        "storageBytes":  { "type": "integer", "minimum": 0 }
+      },
+      "required": ["documentCount", "storageBytes"],
+      "additionalProperties": false
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "maxDocuments":    { "type": "integer", "minimum": 0 },
+        "maxStorageBytes": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["maxDocuments", "maxStorageBytes"],
+      "additionalProperties": false
+    },
+    "isOverLimit": { "type": "boolean" }
+  },
+  "required": ["tier", "subscriptionStatus", "currentPeriodEnd", "usage", "limits", "isOverLimit"],
+  "additionalProperties": false
+}

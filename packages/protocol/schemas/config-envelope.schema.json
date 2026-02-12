@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skystate.io/schemas/config-envelope.schema.json",
+  "title": "ConfigEnvelope",
+  "description": "Public config response returned by GET /project/{projectSlug}/config/{environmentSlug}.",
+  "type": "object",
+  "properties": {
+    "version":      { "$ref": "version.schema.json" },
+    "lastModified": { "type": "string", "format": "date-time" },
+    "config":       { "description": "Deserialized JSON config payload. Any valid JSON value." }
+  },
+  "required": ["version", "lastModified", "config"],
+  "additionalProperties": false
+}

@@ -1,0 +1,14 @@
+name: Test PR
+
+on:
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Test-suite
+    uses: ./.github/workflows/workflow-test.yml

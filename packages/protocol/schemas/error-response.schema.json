@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skystate.io/schemas/error-response.schema.json",
+  "title": "ErrorResponse",
+  "description": "Standard error envelope returned by all SkyState API error responses.",
+  "type": "object",
+  "properties": {
+    "error": {
+      "type": "string",
+      "description": "Machine-readable error code.",
+      "enum": [
+        "validation_error",
+        "invalid_slug_format",
+        "unauthorized",
+        "over_limit",
+        "not_found",
+        "checkout_error",
+        "portal_error"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable error description."
+    }
+  },
+  "required": ["error", "message"],
+  "additionalProperties": false
+}

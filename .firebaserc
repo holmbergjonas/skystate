@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "skystate-staging"
+  },
+  "targets": {
+    "skystate-staging": {
+      "hosting": {
+        "dashboard": [
+          "skystate-staging-dashboard"
+        ],
+        "landing": [
+          "skystate-staging-landing"
+        ]
+      }
+    }
+  }
+}

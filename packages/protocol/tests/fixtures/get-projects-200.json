@@ -1,0 +1,24 @@
+{
+  "name": "list_projects_success",
+  "description": "List all projects for the authenticated user",
+  "request": {
+    "method": "GET",
+    "path": "/projects",
+    "headers": { "Authorization": "Bearer <token>" }
+  },
+  "response": {
+    "status": 200,
+    "schema": { "type": "array", "items": "project.schema.json" },
+    "body": [
+      {
+        "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "userId": "f0e1d2c3-b4a5-6789-0abc-def123456789",
+        "name": "My Game",
+        "slug": "my-game",
+        "apiKeyHash": "sha256:abc123def456",
+        "createdAt": "2025-01-01T00:00:00Z",
+        "updatedAt": "2025-01-10T12:00:00Z"
+      }
+    ]
+  }
+}

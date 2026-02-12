@@ -1,0 +1,26 @@
+{
+  "name": "list_invoices_success",
+  "description": "List all invoices for the authenticated user",
+  "request": {
+    "method": "GET",
+    "path": "/invoices",
+    "headers": { "Authorization": "Bearer <token>" }
+  },
+  "response": {
+    "status": 200,
+    "schema": { "type": "array", "items": "invoice.schema.json" },
+    "body": [
+      {
+        "invoiceId": "cccccccc-dddd-eeee-ffff-aaaaaaaaaaaa",
+        "userId": "f0e1d2c3-b4a5-6789-0abc-def123456789",
+        "tier": "hobby",
+        "boostMultiplier": 1,
+        "amountPaidCents": 999,
+        "status": "paid",
+        "billingPeriodStart": "2025-01-01T00:00:00Z",
+        "billingPeriodEnd": "2025-02-01T00:00:00Z",
+        "createdAt": "2025-02-01T00:00:00Z"
+      }
+    ]
+  }
+}

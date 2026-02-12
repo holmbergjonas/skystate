@@ -1,0 +1,11 @@
+{
+  "name": "get_current_user_unauthorized",
+  "description": "Request without auth token returns 401",
+  "request": {
+    "method": "GET",
+    "path": "/users/me"
+  },
+  "response": {
+    "status": 401
+  }
+}

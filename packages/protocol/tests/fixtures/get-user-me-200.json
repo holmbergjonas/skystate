@@ -1,0 +1,25 @@
+{
+  "name": "get_current_user_success",
+  "description": "Get the currently authenticated user's profile",
+  "request": {
+    "method": "GET",
+    "path": "/users/me",
+    "headers": { "Authorization": "Bearer <token>" }
+  },
+  "response": {
+    "status": 200,
+    "schema": "user.schema.json",
+    "body": {
+      "userId": "f0e1d2c3-b4a5-6789-0abc-def123456789",
+      "ssoProvider": "github",
+      "ssoUserId": "12345678",
+      "email": "user@example.com",
+      "displayName": "Jane Developer",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/12345678",
+      "stripeUserId": null,
+      "lastLoginAt": "2025-01-15T08:00:00Z",
+      "createdAt": "2025-01-01T00:00:00Z",
+      "updatedAt": "2025-01-15T08:00:00Z"
+    }
+  }
+}

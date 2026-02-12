@@ -1,0 +1,41 @@
+name: Auth Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  verify-auth:
+    name: Verify Authentication
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: skystate-staging
+          workload_identity_provider: 'projects/123212194289/locations/global/workloadIdentityPools/github/providers/github-actions'
+          service_account: 'skystate-deploy@skystate-staging.iam.gserviceaccount.com'
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Verify authentication
+        run: |
+          echo "=== gcloud auth list ==="
+          gcloud auth list
+          echo ""
+          echo "=== Project ==="
+          gcloud config get-value project
+          echo ""
+          echo "=== Enabled APIs ==="
+          gcloud services list --enabled --format="value(config.name)" --project=skystate-staging | sort
+          echo ""
+          echo "=== Service Account Roles ==="
+          gcloud projects get-iam-policy skystate-staging \
+            --flatten="bindings[].members" \
+            --filter="bindings.members:skystate-deploy@skystate-staging.iam.gserviceaccount.com" \
+            --format="table(bindings.role)" 2>/dev/null || echo "Cannot list IAM policy (expected if SA lacks resourcemanager permissions)"

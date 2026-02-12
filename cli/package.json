@@ -1,0 +1,42 @@
+{
+  "name": "skystate",
+  "version": "0.1.0",
+  "description": "Manage durable, versioned state from the terminal",
+  "type": "module",
+  "bin": {
+    "skystate": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "eslint . --max-warnings 0 && tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.config.e2e.ts",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@commander-js/extra-typings": "^14.0.0",
+    "ansis": "^3.0.0",
+    "cli-table3": "^0.6.5",
+    "commander": "^14.0.0",
+    "fastest-levenshtein": "^1.0.16",
+    "ora": "^8.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.0.2",
+    "globals": "^17.3.0",
+    "tsup": "^8.5.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^4.0.18"
+  }
+}

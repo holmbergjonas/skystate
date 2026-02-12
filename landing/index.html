@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyState | Home for your code's memory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0d0d1a; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .gradient-text { background: linear-gradient(135deg, #3399FF, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="text-slate-300">
+
+    <nav class="max-w-6xl mx-auto px-6 py-8 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3399FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg>
+            <span class="text-white font-bold text-xl tracking-tight">SkyState</span>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium">
+            <a href="#vision" class="hover:text-white transition">Vision</a>
+            <a href="#api" class="hover:text-white transition">API</a>
+            <a href="#pricing" class="hover:text-white transition">Pricing</a>
+            <a href="https://github.com/skystate" class="hover:text-white transition">GitHub</a>
+        </div>
+        <button class="bg-[#3399FF] hover:bg-blue-500 text-white px-5 py-2 rounded-full text-sm font-semibold transition">
+            Get Started
+        </button>
+    </nav>
+
+    <header class="max-w-4xl mx-auto px-6 pt-20 pb-32 text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
+            I dream big. <br/>
+            <span class="gradient-text">I usually build small.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Every service needs memory. SkyState makes infrastructure invisible, so you can stay in the editor. Where you belong.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <div class="glass rounded-xl p-1 flex items-center">
+                <code class="px-4 py-2 text-blue-400 mono text-sm">curl api.skystate.dev/v1/state</code>
+                <button class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-white transition">Copy</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="max-w-6xl mx-auto px-6 pb-32">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div id="vision">
+                <h2 class="text-3xl font-bold text-white mb-6">Home for your state.</h2>
+                <p class="text-slate-400 mb-6 leading-relaxed">
+                    Simplify your hosting, migrations, and pipelines. SkyState collapses the gap between architectural intent and reality.
+                </p>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-3">
+                        <span class="text-green-500 text-lg">✓</span>
+                        <span>**Semver Versioning** built-in to every state change.</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="text-green-500 text-lg">✓</span>
+                        <span>**CDN-friendly** public endpoints for instant reads.</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="text-green-500 text-lg">✓</span>
+                        <span>**Stripe Billing** ready for your scale.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 shadow-2xl relative">
+                <div class="flex gap-2 mb-4">
+                    <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                </div>
+                <pre class="mono text-sm leading-relaxed overflow-x-auto">
+<span class="text-slate-500">// Your project state</span>
+{
+  <span class="text-blue-400">"version"</span>: <span class="text-orange-400">"1.4.0"</span>,
+  <span class="text-blue-400">"environment"</span>: <span class="text-orange-400">"production"</span>,
+  <span class="text-blue-400">"flags"</span>: {
+    <span class="text-purple-400">"beta_access"</span>: <span class="text-green-400">true</span>,
+    <span class="text-purple-400">"maintenance"</span>: <span class="text-red-400">false</span>
+  }
+}</pre>
+                <div class="absolute -bottom-6 -right-6 glass bg-blue-600/10 p-4 rounded-xl border-blue-500/30">
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Live Update</span>
+                    <div class="text-white font-mono text-sm mt-1">v1.4.0 pushed</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white/5 py-24 px-6 border-y border-white/5">
+        <div class="max-w-3xl mx-auto text-center italic text-xl md:text-2xl text-slate-300 leading-relaxed font-light">
+            "I’m making infrastructure invisible, so we can stay in the editor. <span class="text-white font-semibold">Where we belong.</span>"
+        </div>
+    </section>
+
+    <section id="pricing" class="max-w-6xl mx-auto px-6 py-32">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Simple, transparent pricing</h2>
+            <p class="text-slate-400 text-lg max-w-xl mx-auto">Start free. Scale when you need to.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+
+            <!-- Free tier -->
+            <div class="glass rounded-2xl relative p-8 flex flex-col">
+                <div class="text-lg font-bold text-white mb-2">Free</div>
+                <div class="mb-1">
+                    <span class="text-4xl font-extrabold text-white">$0</span>
+                </div>
+                <div class="text-sm text-slate-400 mb-6">Free forever</div>
+                <ul class="space-y-3 flex-1 mb-8">
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        1 project
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        2 environments
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        500 KB storage
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        30-day version history
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        200 API requests/mo
+                    </li>
+                </ul>
+                <a href="#" class="mt-auto glass rounded-xl px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition text-center block">Get Started</a>
+            </div>
+
+            <!-- Hobby tier (highlighted) -->
+            <div class="rounded-2xl p-[2px] bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-500">
+                <div class="bg-[#0d0d1a] rounded-[14px] relative p-8 flex flex-col h-full">
+                    <div class="text-lg font-bold text-white mb-2">Hobby</div>
+                    <div class="mb-1">
+                        <span class="text-4xl font-extrabold text-white">$5</span>
+                        <span class="text-base font-medium text-slate-400">/month</span>
+                    </div>
+                    <div class="text-sm text-slate-400 mb-6">Everything in Free, plus:</div>
+                    <ul class="space-y-3 flex-1 mb-8">
+                        <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                            <span class="text-indigo-400">&#10003;</span>
+                            3 projects
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                            <span class="text-indigo-400">&#10003;</span>
+                            Unlimited environments
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                            <span class="text-indigo-400">&#10003;</span>
+                            10 MB storage
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                            <span class="text-indigo-400">&#10003;</span>
+                            90-day version history
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                            <span class="text-indigo-400">&#10003;</span>
+                            2,000 API requests/mo
+                        </li>
+                    </ul>
+                    <a href="#" class="mt-auto bg-gradient-to-br from-indigo-500 to-purple-500 text-white rounded-xl px-6 py-3 text-sm font-semibold hover:brightness-110 transition text-center block">Get Started</a>
+                </div>
+            </div>
+
+            <!-- Pro tier -->
+            <div class="glass rounded-2xl relative p-8 flex flex-col">
+                <div class="text-lg font-bold text-white mb-2">Pro</div>
+                <div class="mb-1">
+                    <span class="text-4xl font-extrabold text-white">$15</span>
+                    <span class="text-base font-medium text-slate-400">/month</span>
+                </div>
+                <div class="text-sm text-slate-400 mb-6">Everything in Hobby, plus:</div>
+                <ul class="space-y-3 flex-1 mb-8">
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        10 projects
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        Unlimited environments
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        100 MB storage
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        Unlimited version history
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        20,000 API requests/mo
+                    </li>
+                    <li class="flex items-center gap-2.5 text-sm text-slate-300">
+                        <span class="text-green-500">&#10003;</span>
+                        Resource boosters
+                    </li>
+                </ul>
+                <a href="#" class="mt-auto glass rounded-xl px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition text-center block">Get Started</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-32 grid md:grid-cols-3 gap-8">
+        <div class="glass p-8 rounded-2xl hover:border-blue-500/50 transition">
+            <h3 class="text-white font-bold mb-4">Durable Storage</h3>
+            <p class="text-sm text-slate-400">Freeform JSONB state managed by PostgreSQL and Dapper. Fast, reliable, and portable primitives.</p>
+        </div>
+        <div class="glass p-8 rounded-2xl hover:border-blue-500/50 transition">
+            <h3 class="text-white font-bold mb-4">One-Click Rollbacks</h3>
+            <p class="text-sm text-slate-400">Every update is a version. Use the Time Travel feature to revert state across environments instantly.</p>
+        </div>
+        <div class="glass p-8 rounded-2xl hover:border-blue-500/50 transition">
+            <h3 class="text-white font-bold mb-4">SSO & GitHub Auth</h3>
+            <p class="text-sm text-slate-400">No passwords. Just GitHub OAuth with JIT provisioning for you and your team.</p>
+        </div>
+    </section>
+
+    <footer class="max-w-6xl mx-auto px-6 py-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3399FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg>
+            <span class="text-white font-semibold">SkyState</span>
+        </div>
+        <p class="text-xs text-slate-500">© 2026 SkyState. Built for those who build small.</p>
+    </footer>
+
+</body>
+</html>

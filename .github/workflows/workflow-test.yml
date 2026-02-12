@@ -1,0 +1,298 @@
+name: Tests Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  api-unit-tests:
+    name: API Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Run unit tests
+        run: dotnet test SkyState.Api.UnitTests/
+        working-directory: api
+
+  api-integration-tests:
+    name: API Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Run integration tests
+        run: dotnet test SkyState.Api.IntegrationTests/
+        working-directory: api
+
+  api-e2e-tests:
+    name: API End-to-End Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: skystate
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready --username=admin --dbname=skystate"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Apply database schema
+        run: psql -f api/Database/installation.sql
+        env:
+          PGHOST: localhost
+          PGPORT: 5432
+          PGUSER: admin
+          PGPASSWORD: admin
+          PGDATABASE: skystate
+      - name: Apply migrations
+        run: psql -f api/Database/migrations.sql
+        env:
+          PGHOST: localhost
+          PGPORT: 5432
+          PGUSER: admin
+          PGPASSWORD: admin
+          PGDATABASE: skystate
+      - name: Run E2E tests
+        run: dotnet test SkyState.Api.EndToEndTests/
+        working-directory: api
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Database=skystate;Username=admin;Password=admin"
+
+  dashboard-tests:
+    name: Dashboard Lint, Typecheck & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+        working-directory: dashboard
+      - name: Lint, typecheck and build
+        run: npm run build
+        working-directory: dashboard
+      - name: Run tests
+        run: npm test
+        working-directory: dashboard
+
+  protocol-tests:
+    name: Protocol Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/protocol/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+        working-directory: packages/protocol
+      - name: Run tests
+        run: npm test
+        working-directory: packages/protocol
+
+  cli-typecheck:
+    name: CLI Typecheck, Build & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cli/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+        working-directory: cli
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: cli
+      - name: Build
+        run: npm run build
+        working-directory: cli
+      - name: Run tests
+        run: npm test
+        working-directory: cli
+
+  cli-e2e-tests:
+    name: CLI End-to-End Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: skystate
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready --username=admin --dbname=skystate"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cli/package-lock.json
+      - name: Apply database schema
+        run: psql -f api/Database/installation.sql
+        env:
+          PGHOST: localhost
+          PGPORT: 5432
+          PGUSER: admin
+          PGPASSWORD: admin
+          PGDATABASE: skystate
+      - name: Apply migrations
+        run: psql -f api/Database/migrations.sql
+        env:
+          PGHOST: localhost
+          PGPORT: 5432
+          PGUSER: admin
+          PGPASSWORD: admin
+          PGDATABASE: skystate
+      - name: Start API
+        run: dotnet run --project SkyState.Api/ --no-launch-profile &
+        working-directory: api
+        env:
+          ASPNETCORE_URLS: http://localhost:5148
+          ConnectionStrings__DefaultConnection: "Host=localhost;Database=skystate;Username=admin;Password=admin"
+          EnableTestAuth: "true"
+          ASPNETCORE_ENVIRONMENT: Development
+      - name: Wait for API
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5148/health && exit 0 || sleep 1
+          done
+          echo "API failed to start" && exit 1
+      - name: Install CLI dependencies
+        run: npm ci
+        working-directory: cli
+      - name: Run E2E tests
+        run: npm run test:e2e
+        working-directory: cli
+        env:
+          SKYSTATE_API_URL: http://localhost:5148
+
+  dashboard-e2e-tests:
+    name: Dashboard End-to-End Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: skystate
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready --username=admin --dbname=skystate"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - name: Apply database schema
+        run: psql -f api/Database/installation.sql
+        env:
+          PGHOST: localhost
+          PGPORT: 5432
+          PGUSER: admin
+          PGPASSWORD: admin
+          PGDATABASE: skystate
+      - name: Apply migrations
+        run: psql -f api/Database/migrations.sql
+        env:
+          PGHOST: localhost
+          PGPORT: 5432
+          PGUSER: admin
+          PGPASSWORD: admin
+          PGDATABASE: skystate
+      - name: Start API
+        run: dotnet run --project SkyState.Api/ --no-launch-profile &
+        working-directory: api
+        env:
+          ASPNETCORE_URLS: http://localhost:5148
+          ConnectionStrings__DefaultConnection: "Host=localhost;Database=skystate;Username=admin;Password=admin"
+          EnableTestAuth: "true"
+          ASPNETCORE_ENVIRONMENT: Development
+      - name: Wait for API
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5148/health && exit 0 || sleep 1
+          done
+          echo "API failed to start" && exit 1
+      - name: Install dependencies
+        run: npm ci
+        working-directory: dashboard
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: dashboard
+      - name: Start dev server
+        run: npm run dev &
+        working-directory: dashboard
+        env:
+          VITE_API_BASE_URL: /api
+          VITE_TEST_MODE: "true"
+          VITE_TEST_GITHUB_ID: gh_ci_12345
+          VITE_TEST_EMAIL: ci@test.com
+          VITE_TEST_NAME: CI Test User
+      - name: Wait for dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5173 && exit 0 || sleep 1
+          done
+          echo "Dev server failed to start" && exit 1
+      - name: Run E2E tests
+        run: npm run test:e2e
+        working-directory: dashboard
+        env:
+          E2E_BASE_URL: http://localhost:5173
+          VITE_TEST_GITHUB_ID: gh_ci_12345
+          VITE_TEST_EMAIL: ci@test.com
+          VITE_TEST_NAME: CI Test User

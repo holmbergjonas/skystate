@@ -1,0 +1,11 @@
+{
+  "name": "public_read_not_found",
+  "description": "Public read for unknown project/environment combination returns 404",
+  "request": {
+    "method": "GET",
+    "path": "/project/nonexistent-project/config/production"
+  },
+  "response": {
+    "status": 404
+  }
+}
