@@ -103,6 +103,6 @@ Note: Phase 4 depends on Phase 1 (not Phase 3) and could execute in parallel wit
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. API URL Restructure | 3/3 | Complete | 2026-03-05 |
-| 2. Core SDK | 0/3 | Not started | - |
+| 2. Core SDK | 3/3 | Complete | 2026-03-05 |
 | 3. React SDK | 0/? | Not started | - |
 | 4. Dashboard and CLI Alignment | 0/? | Not started | - |
