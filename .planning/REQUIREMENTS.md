@@ -18,15 +18,16 @@ Requirements for V1 -- Remote Config. Each maps to roadmap phases.
 - [x] **CORE-02**: PubSubEmitter provides granular key-path subscription registry with path-level notifications
 - [x] **CORE-03**: HttpClient fetches config via HTTP, respects Cache-Control, re-fetches on page visibility change
 - [x] **CORE-04**: ConfigStore composes cache + pub/sub + HTTP client; one instance per (apiUrl, project, env) tuple
+- [ ] **CORE-05**: Strict environment validation — `getOrCreateStore` throws if `environmentSlug` is not `'development' | 'staging' | 'production'`. Always throws, no fallback, no `NODE_ENV` check. (Added per V2.6 §4.1)
 
 ### React SDK
 
-- [ ] **REACT-01**: SkyStateProvider component holds one ConfigStore instance, accepts apiUrl/projectSlug/environmentSlug/initialData props
+- [ ] **REACT-01**: SkyStateProvider component holds one ConfigStore instance, accepts required `apiUrl`, `projectSlug`, `env` props plus optional `initialData`. `env` must be `'development' | 'staging' | 'production'` (validated by core CORE-05)
 - [ ] **REACT-02**: `useProjectConfig(path?, fallback?)` hook uses `useSyncExternalStore` and returns `{ value, isLoading, error }`
 - [ ] **REACT-03**: `useProjectConfigStatus()` hook returns `{ lastFetched, error }`
 - [ ] **REACT-04**: Components using `useProjectConfig` only rerender when their subscribed path value changes
 - [ ] **REACT-05**: `useProjectConfig<T>(path, fallback: T)` supports TypeScript generics with typed return
-- [ ] **REACT-06**: SkyStateProvider accepts `initialData` prop for SSR hydration (pre-populates cache before mount)
+- [ ] **REACT-06**: SkyStateProvider accepts optional `initialData` prop for SSR hydration (pre-populates cache before mount, code-driven only — no file dependency)
 - [ ] **REACT-07**: Provider cleanup on unmount disposes the ConfigStore and clears all subscriptions
 
 ### Dashboard
@@ -35,9 +36,11 @@ Requirements for V1 -- Remote Config. Each maps to roadmap phases.
 - [ ] **DASH-02**: Dashboard UI renames "State" tab and labels to "Config"
 - [ ] **DASH-03**: Dashboard UI copy uses "config" terminology instead of "state"
 
-### CLI
+### CLI (Minimal V1)
 
-- [ ] **CLI-01**: CLI HTTP calls use new `/project/{id}/config/...` endpoint patterns
+- [ ] **CLI-01**: `skystate init` — interactive setup: login, select/create project, select environment
+- [ ] **CLI-02**: `skystate pull` — fetch config schema from server, generate `skystate.d.ts` for IDE autocomplete (V2.6 §6.3)
+- [ ] **CLI-03**: `skystate settings` — basic CLI configuration (API URL, defaults)
 
 ## v2 Requirements
 
@@ -79,6 +82,9 @@ Deferred to V2 milestone. Tracked but not in current roadmap.
 | OpenFeature adapter | Flat key-space model doesn't map to JSON config blob traversal |
 | Self-hosted deployment | Not validated demand |
 | DB table rename | Internal detail; URL restructure sufficient for public-facing consistency |
+| `skystate.json` local config file | Dropped indefinitely per V2.6 §1.1 — SDK is purely code-driven, no runtime file dependency |
+| CLI config management (push/diff/promote/rollback) | Dashboard handles config management in V1; CLI can grow from user demand |
+| Environment fallback in prod | Dropped — always throw on invalid env, no silent fallback (V2.6 §4.1 deviation) |
 
 ## Traceability
 
@@ -99,14 +105,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REACT-05 | Phase 3 | Pending |
 | REACT-06 | Phase 3 | Pending |
 | REACT-07 | Phase 3 | Pending |
+| CORE-05 | Phase 3 | Pending |
 | DASH-01 | Phase 4 | Pending |
 | DASH-02 | Phase 4 | Pending |
 | DASH-03 | Phase 4 | Pending |
 | CLI-01 | Phase 4 | Pending |
+| CLI-02 | Phase 4 | Pending |
+| CLI-03 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 17 total
-- Mapped to phases: 17
+- v1 requirements: 20 total
+- Mapped to phases: 20
 - Unmapped: 0
 
 ---

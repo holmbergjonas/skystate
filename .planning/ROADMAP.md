@@ -13,7 +13,7 @@ SkyState v1.0 delivers remote config with a polling-based SDK. The work flows fr
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: API URL Restructure** - Migrate public and authenticated endpoints to `/project/.../config/...` URL pattern, environment simplification, Cache-Control, rate limiting
-- [ ] **Phase 2: Core SDK** - Build the @skystate/core engine: cache, pub/sub emitter, HTTP polling client, and ConfigStore composition
+- [x] **Phase 2: Core SDK** - Build the @skystate/core engine: cache, pub/sub emitter, HTTP polling client, and ConfigStore composition
 - [ ] **Phase 3: React SDK** - Build @skystate/react with SkyStateProvider, useProjectConfig hook, and config status hook
 - [ ] **Phase 4: Dashboard and CLI Alignment** - Update dashboard and CLI to use new config endpoints and terminology
 
@@ -49,19 +49,25 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md -- Package restructure, tooling setup, and type contracts
-- [ ] 02-02-PLAN.md -- ConfigCache (structural sharing) and PubSubEmitter (path-level subscriptions)
-- [ ] 02-03-PLAN.md -- HttpClient (fetch + Cache-Control + visibility) and ConfigStore facade
+- [x] 02-02-PLAN.md -- ConfigCache (structural sharing) and PubSubEmitter (path-level subscriptions)
+- [x] 02-03-PLAN.md -- HttpClient (fetch + Cache-Control + visibility) and ConfigStore facade
 
 ### Phase 3: React SDK
 **Goal**: Developers can drop in SkyStateProvider and useProjectConfig to get type-safe config values that update on re-fetch with minimal re-renders
 **Depends on**: Phase 2
-**Requirements**: REACT-01, REACT-02, REACT-03, REACT-04, REACT-05, REACT-06, REACT-07
+**Requirements**: CORE-05, REACT-01, REACT-02, REACT-03, REACT-04, REACT-05, REACT-06, REACT-07
+**V2.6 Decisions**:
+  - Strict env validation in core (CORE-05) — always throw on invalid env, no fallback
+  - `skystate.json` dropped indefinitely — SDK is purely code-driven, `initialData` is a code prop only
+  - Hook returns `{ value, isLoading, error }` — `value` not `data` (framework-agnostic naming)
+  - `env` prop uses full names: `'development' | 'staging' | 'production'`
 **Success Criteria** (what must be TRUE):
-  1. Wrapping an app in `<SkyStateProvider apiUrl={...} projectSlug={...} environmentSlug={...}>` creates a single shared ConfigStore, and `useProjectConfig('path')` returns config values within child components
+  1. Wrapping an app in `<SkyStateProvider apiUrl={...} projectSlug={...} env={...}>` creates a single shared ConfigStore, and `useProjectConfig('path')` returns config values within child components
   2. `useProjectConfig(path, fallback)` returns `{ value, isLoading, error }` where `isLoading` is true until the first config is available, and `value` falls back to the provided default
   3. A component using `useProjectConfig('features.darkMode')` does NOT re-render when an unrelated config path (e.g., `features.banner`) changes
   4. `useProjectConfig<T>(path, fallback)` supports TypeScript generics so `value` is typed as `T`
   5. Unmounting the SkyStateProvider cleans up the ConfigStore and clears all subscriptions (no resource leaks)
+  6. Passing an invalid `env` string to SkyStateProvider (or directly to `getOrCreateStore`) throws immediately
 **Plans**: TBD
 
 Plans:
@@ -69,13 +75,19 @@ Plans:
 - [ ] 03-02: TBD
 
 ### Phase 4: Dashboard and CLI Alignment
-**Goal**: Dashboard UI and CLI commands use the new config endpoints and "Config" terminology consistently
+**Goal**: Dashboard UI uses new config endpoints/terminology; CLI is rebuilt as a minimal tool (init, pull, settings)
 **Depends on**: Phase 1
-**Requirements**: DASH-01, DASH-02, DASH-03, CLI-01
+**Requirements**: DASH-01, DASH-02, DASH-03, CLI-01, CLI-02, CLI-03
+**V2.6 Decisions**:
+  - CLI stripped to minimal V1 scope: `skystate init` (interactive setup), `skystate pull` (type generation → `skystate.d.ts`), `skystate settings`
+  - Existing CLI config management commands (push/diff/promote/rollback/edit) dropped — dashboard handles config management in V1
+  - `skystate pull` generates TypeScript types from server schema for IDE autocomplete (V2.6 §6.3)
 **Success Criteria** (what must be TRUE):
   1. Dashboard API calls target `/project/{id}/config/...` endpoints (no requests to old `/projectstates/...` URLs)
   2. Dashboard tab previously labeled "State" now reads "Config", and all UI copy uses "config" instead of "state"
-  3. CLI commands (`push`, `pull`, `diff`, `promote`, `rollback`) send requests to `/project/{id}/config/...` endpoints
+  3. `skystate init` interactively logs in, selects/creates a project, and selects an environment
+  4. `skystate pull` fetches the config schema and generates a `skystate.d.ts` file for IDE autocomplete
+  5. `skystate settings` allows configuring API URL and CLI defaults
 **Plans**: TBD
 
 Plans:

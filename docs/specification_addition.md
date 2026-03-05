@@ -40,3 +40,52 @@ Recent Architectural Decisions & Refinements:
         If client < Minimum: Backend short-circuits with 426 Upgrade Required. The SDK catches this and throws a fatal error, halting all sync/polling.
 
         If client >= Minimum but < Deprecated: Backend processes normally but attaches a Warning: 299 HTTP header. The SDK catches this and logs a warning to the developer's console.
+
+
+
+
+# Default config 
+
+To make a "default config" work across V1 (Remote Config), V2 (User State), and V3 (Session State), you need to treat the default as the "Base Layer" of a state sandwich.
+
+The "Init Failure" scenario is critical because if the SDK can't hit the API on the first try, the app needs something to render. Here is the technically crisp way to handle this for all three:
+🛠️ The Implementation: The InitialState Bundle
+
+Instead of the developer just passing a projectId, they provide a local JSON object (or a path to one) during SDK initialization.
+1. V1 (Project/Remote Config)
+
+    Source: CLI pulls from API (skystate pull).
+
+    Behavior: This is the hard fallback. If the network is down or the API returns a 404/500, the SDK returns the values from this local JSON.
+
+    UX: The app works immediately. Feature flags default to whatever was "pulled" last by the dev.
+
+2. V2 (User State)
+
+    Source: Developer-defined "New User Template."
+
+    Behavior: This is the seed data. When a new user logs in (Firebase Auth), the backend checks if they have a state record. If not, it uses this template to create one.
+
+    Client Side: If the SDK fails to fetch the user state on init, it uses this local template so the UI doesn't crash (e.g., inventory: []).
+
+3. V3 (Session State)
+
+    Source: Developer-defined "Room/Lobby Template."
+
+    Behavior: This defines the Starting Conditions of a session. When the first person creates a room, this JSON defines the board state, timer, etc.
+
+    Client Side: While waiting to connect to the WebSocket, the UI can optimistically render based on this template.
+
+🚀 Recommendation: Option 1 (CLI Automation)
+
+I strongly recommend Option 1 (CLI pulls it from API) for the following reasons:
+
+    Single Source of Truth: You edit your config in the SkyState Dashboard/CLI, then run skystate pull. This generates a skystate.config.json in your project.
+
+    Type Safety: The CLI can generate TypeScript Types based on that JSON. So when the dev calls useProjectConfig('hero.hp'), the IDE knows hp is a number.
+
+    No "Manual Drift": If a dev creates the file manually (Option 2), they will inevitably forget to update it when they add new flags in the dashboard, leading to crashes when the "fallback" is missing a key.
+
+How to feed this to Claude:
+
+    "We are going with Option 1. The CLI will provide a pull command to fetch a snapshot of the Project Config (V1) and User/Session Templates (V2/V3) into a local skystate.config.json. The SDK must accept this JSON as an initialState argument. If the initial network request fails, the SDK must merge this local JSON into the state so the app remains functional."
