@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 02-03-PLAN.md (Phase 02 complete)
-last_updated: "2026-03-05T11:37:36.744Z"
-last_activity: 2026-03-05 -- Completed Plan 02-03
+status: planning
+stopped_at: Phase 3 context gathered
+last_updated: "2026-03-05T12:27:44.883Z"
+last_activity: 2026-03-05 -- V2.6 spec review and decisions
 progress:
   total_phases: 4
   completed_phases: 2
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** Developers can push JSON config and have all connected clients receive updates via polling, with zero infrastructure setup.
-**Current focus:** Phase 2: Core SDK
+**Current focus:** Phase 3: React SDK
 
 ## Current Position
 
-Phase: 2 of 4 (Core SDK)
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: Phase 02 COMPLETE
-Last activity: 2026-03-05 -- Completed Plan 02-03
+Phase: 3 of 4 (React SDK)
+Plan: 0 of ? in current phase -- Planning
+Status: Phase 03 discussion complete, ready for planning
+Last activity: 2026-03-05 -- V2.6 spec review and decisions
 
 Progress: [██████████] 100%
 
@@ -82,6 +82,12 @@ Recent decisions affecting current work:
 - [02-03]: ConfigStore uses __status reserved path for status change notifications (isLoading, error, lastFetched)
 - [02-03]: Singleton registry key format: apiUrl|projectSlug|environmentSlug with pipe separator
 - [02-03]: initialConfig seeded as synthetic ConfigEnvelope with version 0.0.0
+- [V2.6]: Hook returns `{ value, isLoading, error }` — `value` not `data` (framework-agnostic naming)
+- [V2.6]: Strict env validation in core — always throw on invalid env, no fallback, no NODE_ENV check
+- [V2.6]: `skystate.json` local config file dropped indefinitely — SDK is purely code-driven
+- [V2.6]: CLI minimal V1 scope: `init` (interactive setup), `pull` (type gen → skystate.d.ts), `settings`
+- [V2.6]: Existing CLI config management commands (push/diff/promote/rollback) dropped for V1
+- [V2.6]: `env` prop uses full names: `'development' | 'staging' | 'production'` (V2.4 naming, not V2.5 short names)
 
 ### Pending Todos
 
@@ -93,6 +99,6 @@ None -- SSE blockers eliminated with Phase 2 removal.
 
 ## Session Continuity
 
-Last session: 2026-03-05T11:31:49Z
-Stopped at: Completed 02-03-PLAN.md (Phase 02 complete)
-Resume file: Next phase
+Last session: 2026-03-05T12:27:44.881Z
+Stopped at: Phase 3 context gathered
+Resume file: .planning/phases/03-react-sdk/03-CONTEXT.md
